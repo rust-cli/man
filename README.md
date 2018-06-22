@@ -3,7 +3,7 @@
 [![downloads][5]][6] [![docs.rs docs][7]][8]
 
 Generate structured man pages using
-[troff-rs](https://github.com/killercup/troff-rs).
+[roff-rs](https://github.com/killercup/roff-rs).
 
 - [Documentation][8]
 - [Crates.io][2]
