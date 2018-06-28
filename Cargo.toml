@@ -9,5 +9,6 @@ authors = ["Yoshua Wuyts <yoshuawuyts@gmail.com>"]
 readme = "README.md"
 
 [dependencies]
+clap = { git = "https://github.com/kbknapp/clap-rs", branch = "v3-dev" }
 
 [dev-dependencies]
