@@ -10,5 +10,6 @@ readme = "README.md"
 
 [dependencies]
 clap = { git = "https://github.com/kbknapp/clap-rs", branch = "v3-dev" }
+roff = "0.1.0"
 
 [dev-dependencies]

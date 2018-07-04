@@ -1,7 +1,7 @@
 extern crate clap;
 extern crate man;
 
-use clap::{App, AppSettings, Arg, SubCommand};
+use clap::{App, AppSettings, Arg, Man, SubCommand};
 use man::Manual;
 
 fn main() {

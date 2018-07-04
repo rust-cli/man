@@ -4,8 +4,12 @@
 #![cfg_attr(test, deny(warnings))]
 
 extern crate clap;
+extern crate roff;
+
+mod man;
 
 use clap::{App, Arg, ArgSettings};
+pub use man::*;
 
 /// Describe an argument or option
 #[derive(Debug)]

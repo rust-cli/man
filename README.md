@@ -22,6 +22,8 @@ fn main() {
     .flag(Some("-d"), Some("--debug"), Some("Activate debug mode"))
     .flag(Some("-v"), Some("--verbose"), Some("Verbose mode"));
     .option(Some("-o"), Some("--output"), "output", None, "Output file");
+
+  let _string = page.to_string();
 }
 ```
 
