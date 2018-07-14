@@ -37,7 +37,7 @@ impl Man {
   }
 
   /// Add an author.
-  pub fn author(&mut self, name: impl AsRef<String>, email: Option<String>) {
+  pub fn author(&mut self, name: impl AsRef<str>, email: Option<String>) {
     self.authors.push(Author {
       name: name.as_ref().to_owned(),
       email,
@@ -59,6 +59,7 @@ impl Man {
     let mut page = Roff::new(&self.name, man_num);
 
     page = description(page, &self.description);
+    page = authors(page, &self.authors);
     page.render()
   }
 }
@@ -94,13 +95,13 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
     _ => "AUTHORS",
   };
 
-  let auth_values = vec![];
+  let mut auth_values = vec![];
   for author in authors.iter() {
-    let email = match author.email {
-      Some(email) => format!("- {:?}", email),
-      None => "".into(),
+    auth_values.push(roff::bold(&author.name));
+
+    if let Some(ref email) = author.email {
+      auth_values.push(format!("- {:?}", email))
     };
-    auth_values.push([roff::bold(&author.name), email]);
   }
 
   page.section(title, &auth_values)
