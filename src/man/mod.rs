@@ -5,7 +5,7 @@ mod option;
 use self::author::Author;
 use self::flag::Flag;
 use self::option::Opt;
-use roff::{self, Roff, Troffable};
+use roff::{Roff, Troffable};
 use std::convert::AsRef;
 
 /// Man page struct.
@@ -58,7 +58,7 @@ impl Man {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
 
-    page = description(page, &self.description);
+    page = description(page, &self.name, &self.description);
     page = authors(page, &self.authors);
     page.render()
   }
@@ -71,10 +71,11 @@ impl Man {
 /// NAME
 ///         mycmd - brief description of the application
 /// ```
-pub fn description(page: Roff, desc: &Option<String>) -> Roff {
+#[inline]
+pub fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   let desc = match desc {
-    Some(ref desc) => format!("- {:?}", desc),
-    None => String::from(""),
+    Some(ref desc) => format!("{} - {}", name, desc),
+    None => name.to_owned(),
   };
 
   page.section("NAME", &[desc])
@@ -88,6 +89,7 @@ pub fn description(page: Roff, desc: &Option<String>) -> Roff {
 ///           alice person <alice@person.com>
 ///           bob human <bob@human.com>
 /// ```
+#[inline]
 pub fn authors(page: Roff, authors: &[Author]) -> Roff {
   let title = match authors.len() {
     0 => return page,
@@ -95,14 +97,32 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
     _ => "AUTHORS",
   };
 
+  let last = authors.len() - 1;
   let mut auth_values = vec![];
-  for author in authors.iter() {
-    auth_values.push(roff::bold(&author.name));
+  auth_values.push(init_list());
+  for (index, author) in authors.iter().enumerate() {
+    auth_values.push(author.name.to_owned());
 
     if let Some(ref email) = author.email {
-      auth_values.push(format!("- {:?}", email))
+      auth_values.push(format!(" <{}>", email))
     };
+
+    if index != last {
+      auth_values.push(format!("\n"));
+    }
   }
 
   page.section(title, &auth_values)
+}
+
+// NOTE(yw): This code was taken from the npm-install(1) command. The location
+// on your system may vary. In all honesty I just copy-pasted this. We should
+// probably port this to troff-rs at some point.
+//
+// ```sh
+// $ less /usr/share/man/man1/npm-install.1
+// ```
+#[inline]
+fn init_list() -> String {
+  format!(".P\n.RS 2\n.nf\n")
 }

@@ -26,6 +26,10 @@ fn main() {
   let _string = page.to_string();
 }
 ```
+Preview by running:
+```sh
+$ cargo run > /tmp/app.man; man /tmp/app.man
+```
 
 ## Installation
 ```sh
