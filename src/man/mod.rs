@@ -86,8 +86,8 @@ pub fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
 /// ## Formatting
 /// ```txt
 /// AUTHORS
-///           alice person <alice@person.com>
-///           bob human <bob@human.com>
+///          Alice Person <alice@person.com>
+///          Bob Human <bob@human.com>
 /// ```
 #[inline]
 pub fn authors(page: Roff, authors: &[Author]) -> Roff {
