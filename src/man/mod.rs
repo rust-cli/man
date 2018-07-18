@@ -75,6 +75,7 @@ impl Man {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
     page = description(page, &self.name, &self.description);
+    page = flags(page, &self.flags);
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -140,8 +141,35 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
 ///          Alice Person <alice@person.com>
 ///          Bob Human <bob@human.com>
 /// ```
-pub fn flags(_page: Roff) -> Roff {
-  unimplemented!();
+pub fn flags(page: Roff, flags: &[Flag]) -> Roff {
+  if flags.is_empty() {
+    return page;
+  }
+
+  let last = flags.len() - 1;
+  let mut arr: Vec<String> = vec![];
+  for (index, flag) in flags.iter().enumerate() {
+    let mut args: Vec<String> = vec![];
+    if let Some(ref short) = flag.short {
+      args.push(bold(&short));
+    }
+    if let Some(ref long) = flag.long {
+      if !args.is_empty() {
+        args.push(", ".to_string());
+      }
+      args.push(bold(&long));
+    }
+    let desc = match flag.description {
+      Some(ref desc) => desc.to_string(),
+      None => "".to_string(),
+    };
+    arr.push(list(&args, &[desc]));
+
+    if index != last {
+      arr.push(format!("\n\n"));
+    }
+  }
+  page.section("FLAGS", &arr)
 }
 
 /// Create a `EXIT STATUS` section.
@@ -160,9 +188,8 @@ pub fn flags(_page: Roff) -> Roff {
 ///        2      Optional error
 /// ```
 pub fn exit_status(page: Roff) -> Roff {
-  let section = "EXIT STATUS";
   page.section(
-    section,
+    "EXIT STATUS",
     &[list(&[bold("0")], &["Successful program execution."])],
   )
 }
