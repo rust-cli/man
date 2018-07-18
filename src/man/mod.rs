@@ -5,7 +5,7 @@ mod option;
 use self::author::Author;
 use self::flag::Flag;
 use self::option::Opt;
-use roff::{Roff, Troffable};
+use roff::{bold, list, Roff, Troffable};
 use std::convert::AsRef;
 
 /// Man page struct.
@@ -51,8 +51,17 @@ impl Man {
   }
 
   /// Add an flag.
-  pub fn flag(mut self, flag: Flag) -> Self {
-    self.flags.push(flag);
+  pub fn flag(
+    mut self,
+    short: Option<String>,
+    long: Option<String>,
+    description: Option<String>,
+  ) -> Self {
+    self.flags.push(Flag {
+      short,
+      long,
+      description,
+    });
     self
   }
 
@@ -65,8 +74,8 @@ impl Man {
   pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
-
     page = description(page, &self.name, &self.description);
+    page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
   }
@@ -121,6 +130,41 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
   }
 
   page.section(title, &auth_values)
+}
+
+/// Create a `FLAGS` section.
+///
+/// ## Formatting
+/// ```txt
+/// FLAGS
+///          Alice Person <alice@person.com>
+///          Bob Human <bob@human.com>
+/// ```
+pub fn flags(_page: Roff) -> Roff {
+  unimplemented!();
+}
+
+/// Create a `EXIT STATUS` section.
+///
+/// ## Implementation Note
+/// This currently only returns the status code `0`, and takes no arguments. We
+/// should let it take arguments.
+///
+/// ## Formatting
+/// ```txt
+/// EXIT STATUS
+///        0      Successful program execution
+///
+///        1      Usage, syntax or configuration file error
+///
+///        2      Optional error
+/// ```
+pub fn exit_status(page: Roff) -> Roff {
+  let section = "EXIT STATUS";
+  page.section(
+    section,
+    &[list(&[bold("0")], &["Successful program execution."])],
+  )
 }
 
 // NOTE(yw): This code was taken from the npm-install(1) command. The location
