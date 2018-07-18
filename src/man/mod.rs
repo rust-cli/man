@@ -31,30 +31,38 @@ impl Man {
   }
 
   /// Add a description.
-  pub fn description(&mut self, desc: &str) {
+  pub fn description(mut self, desc: &str) -> Self {
     let desc = desc.into();
     self.description = Some(desc);
+    self
   }
 
   /// Add an author.
-  pub fn author(&mut self, name: impl AsRef<str>, email: Option<String>) {
+  pub fn author(
+    mut self,
+    name: impl AsRef<str>,
+    email: Option<String>,
+  ) -> Self {
     self.authors.push(Author {
       name: name.as_ref().to_owned(),
       email,
     });
+    self
   }
 
   /// Add an flag.
-  pub fn flag(&mut self, flag: Flag) {
+  pub fn flag(mut self, flag: Flag) -> Self {
     self.flags.push(flag);
+    self
   }
 
   /// Add an option.
-  pub fn option(&mut self, option: Opt) {
+  pub fn option(mut self, option: Opt) -> Self {
     self.options.push(option);
+    self
   }
 
-  pub fn render(&mut self) -> String {
+  pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
 
