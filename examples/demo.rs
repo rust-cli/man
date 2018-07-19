@@ -5,6 +5,7 @@ use man::Man;
 fn main() {
   let msg = Man::new("auth-service")
     .description("authorize & authenticate members")
+    .argument("path".into())
     .flag(
       Some("-h".into()),
       Some("--help".into()),

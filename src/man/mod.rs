@@ -16,6 +16,7 @@ pub struct Man {
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
+  arguments: Vec<String>,
 }
 
 impl Man {
@@ -27,6 +28,7 @@ impl Man {
       authors: vec![],
       flags: vec![],
       options: vec![],
+      arguments: vec![],
     }
   }
 
@@ -84,10 +86,25 @@ impl Man {
     self
   }
 
+  /// Add a positional argument. The items are displayed in the order they're
+  /// pushed.
+  // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
+  pub fn argument(mut self, arg: String) -> Self {
+    self.arguments.push(arg);
+    self
+  }
+
   pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
     page = description(page, &self.name, &self.description);
+    page = synopsis(
+      page,
+      &self.name,
+      &self.flags,
+      &self.options,
+      &self.arguments,
+    );
     page = flags(page, &self.flags);
     page = options(page, &self.options);
     page = exit_status(page);
@@ -111,6 +128,35 @@ pub fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   };
 
   page.section("NAME", &[desc])
+}
+
+/// Create a `SYNOPSIS` section.
+pub fn synopsis(
+  page: Roff,
+  name: &str,
+  flags: &[Flag],
+  options: &[Opt],
+  args: &[String],
+) -> Roff {
+  let flags = match flags.len() {
+    0 => "".into(),
+    _ => " [FLAGS]".into(),
+  };
+  let options = match options.len() {
+    0 => "".into(),
+    _ => " [OPTIONS]".into(),
+  };
+
+  let mut msg = vec![];
+  msg.push(bold(name));
+  msg.push(flags);
+  msg.push(options);
+
+  for arg in args {
+    msg.push(format!(" {}", arg));
+  }
+
+  page.section("SYNOPSIS", &msg)
 }
 
 /// Create a `AUTHOR` or `AUTHORS` section.
