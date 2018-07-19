@@ -6,6 +6,11 @@ fn main() {
   let msg = Man::new("auth-service")
     .description("authorize & authenticate members")
     .argument("path".into())
+    .environment(
+      "PORT".into(),
+      None,
+      Some("The network port to listen to.".into()),
+    )
     .flag(
       Some("-h".into()),
       Some("--help".into()),

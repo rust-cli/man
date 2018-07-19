@@ -1,8 +1,10 @@
 mod author;
+mod environment;
 mod flag;
 mod option;
 
 use self::author::Author;
+use self::environment::Env;
 use self::flag::Flag;
 use self::option::Opt;
 use roff::{bold, italic, list, Roff, Troffable};
@@ -16,6 +18,7 @@ pub struct Man {
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
+  environment: Vec<Env>,
   arguments: Vec<String>,
 }
 
@@ -29,6 +32,7 @@ impl Man {
       flags: vec![],
       options: vec![],
       arguments: vec![],
+      environment: vec![],
     }
   }
 
@@ -48,6 +52,21 @@ impl Man {
     self.authors.push(Author {
       name: name.as_ref().to_owned(),
       email,
+    });
+    self
+  }
+
+  /// Add an environment variable.
+  pub fn environment(
+    mut self,
+    name: String,
+    default: Option<String>,
+    description: Option<String>,
+  ) -> Self {
+    self.environment.push(Env {
+      name,
+      default,
+      description,
     });
     self
   }
@@ -107,6 +126,7 @@ impl Man {
     );
     page = flags(page, &self.flags);
     page = options(page, &self.options);
+    page = environment(page, &self.environment);
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -277,6 +297,45 @@ pub fn options(page: Roff, options: &[Opt]) -> Roff {
     }
   }
   page.section("OPTIONS", &arr)
+}
+
+/// Create a `ENVIRONMENT` section.
+///
+/// ## Formatting
+/// ```txt
+/// ENVIRONMENT
+/// ```
+pub fn environment(page: Roff, environment: &[Env]) -> Roff {
+  if environment.is_empty() {
+    return page;
+  }
+
+  let last = environment.len() - 1;
+  let mut arr: Vec<String> = vec![];
+  for (index, env) in environment.iter().enumerate() {
+    let mut args: Vec<String> = vec![];
+    args.push(bold(&env.name));
+    if let Some(ref default) = env.default {
+      if !args.is_empty() {
+        args.push(" ".to_string());
+      }
+      args.push("[".into());
+      args.push("default:".into());
+      args.push(" ".into());
+      args.push(italic(&default));
+      args.push("]".into());
+    }
+    let desc = match env.description {
+      Some(ref desc) => desc.to_string(),
+      None => "".to_string(),
+    };
+    arr.push(list(&args, &[desc]));
+
+    if index != last {
+      arr.push(format!("\n\n"));
+    }
+  }
+  page.section("ENVIRONMENT", &arr)
 }
 
 /// Create a `EXIT STATUS` section.
