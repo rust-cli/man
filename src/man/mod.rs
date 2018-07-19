@@ -5,7 +5,7 @@ mod option;
 use self::author::Author;
 use self::flag::Flag;
 use self::option::Opt;
-use roff::{bold, list, Roff, Troffable};
+use roff::{bold, italic, list, Roff, Troffable};
 use std::convert::AsRef;
 
 /// Man page struct.
@@ -66,8 +66,21 @@ impl Man {
   }
 
   /// Add an option.
-  pub fn option(mut self, option: Opt) -> Self {
-    self.options.push(option);
+  pub fn option(
+    mut self,
+    short: Option<String>,
+    long: Option<String>,
+    description: Option<String>,
+    argument: String,
+    default: Option<String>,
+  ) -> Self {
+    self.options.push(Opt {
+      short,
+      long,
+      description,
+      argument,
+      default,
+    });
     self
   }
 
@@ -76,6 +89,7 @@ impl Man {
     let mut page = Roff::new(&self.name, man_num);
     page = description(page, &self.name, &self.description);
     page = flags(page, &self.flags);
+    page = options(page, &self.options);
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -138,8 +152,6 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
 /// ## Formatting
 /// ```txt
 /// FLAGS
-///          Alice Person <alice@person.com>
-///          Bob Human <bob@human.com>
 /// ```
 pub fn flags(page: Roff, flags: &[Flag]) -> Roff {
   if flags.is_empty() {
@@ -170,6 +182,55 @@ pub fn flags(page: Roff, flags: &[Flag]) -> Roff {
     }
   }
   page.section("FLAGS", &arr)
+}
+
+/// Create a `OPTIONS` section.
+///
+/// ## Formatting
+/// ```txt
+/// OPTIONS
+/// ```
+pub fn options(page: Roff, options: &[Opt]) -> Roff {
+  if options.is_empty() {
+    return page;
+  }
+
+  let last = options.len() - 1;
+  let mut arr: Vec<String> = vec![];
+  for (index, opt) in options.iter().enumerate() {
+    let mut args: Vec<String> = vec![];
+    if let Some(ref short) = opt.short {
+      args.push(bold(&short));
+    }
+    if let Some(ref long) = opt.long {
+      if !args.is_empty() {
+        args.push(", ".to_string());
+      }
+      args.push(bold(&long));
+    }
+    args.push("=".into());
+    args.push(italic(&opt.argument));
+    if let Some(ref default) = opt.default {
+      if !args.is_empty() {
+        args.push(" ".to_string());
+      }
+      args.push("[".into());
+      args.push("default:".into());
+      args.push(" ".into());
+      args.push(italic(&default));
+      args.push("]".into());
+    }
+    let desc = match opt.description {
+      Some(ref desc) => desc.to_string(),
+      None => "".to_string(),
+    };
+    arr.push(list(&args, &[desc]));
+
+    if index != last {
+      arr.push(format!("\n\n"));
+    }
+  }
+  page.section("OPTIONS", &arr)
 }
 
 /// Create a `EXIT STATUS` section.
