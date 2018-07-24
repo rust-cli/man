@@ -1,5 +1,5 @@
 /// Option
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Opt {
   pub(crate) short: Option<String>,
   pub(crate) long: Option<String>,

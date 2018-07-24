@@ -1,5 +1,5 @@
 /// Command line flag representation.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Flag {
   pub(crate) short: Option<String>,
   pub(crate) long: Option<String>,

@@ -11,7 +11,7 @@ use roff::{bold, italic, list, Roff, Troffable};
 use std::convert::AsRef;
 
 /// Man page struct.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Man {
   name: String,
   description: Option<String>,
@@ -140,8 +140,7 @@ impl Man {
 /// NAME
 ///         mycmd - brief description of the application
 /// ```
-#[inline]
-pub fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
+fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   let desc = match desc {
     Some(ref desc) => format!("{} - {}", name, desc),
     None => name.to_owned(),
@@ -151,7 +150,7 @@ pub fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
 }
 
 /// Create a `SYNOPSIS` section.
-pub fn synopsis(
+fn synopsis(
   page: Roff,
   name: &str,
   flags: &[Flag],
@@ -187,8 +186,7 @@ pub fn synopsis(
 ///          Alice Person <alice@person.com>
 ///          Bob Human <bob@human.com>
 /// ```
-#[inline]
-pub fn authors(page: Roff, authors: &[Author]) -> Roff {
+fn authors(page: Roff, authors: &[Author]) -> Roff {
   let title = match authors.len() {
     0 => return page,
     1 => "AUTHOR",
@@ -219,7 +217,7 @@ pub fn authors(page: Roff, authors: &[Author]) -> Roff {
 /// ```txt
 /// FLAGS
 /// ```
-pub fn flags(page: Roff, flags: &[Flag]) -> Roff {
+fn flags(page: Roff, flags: &[Flag]) -> Roff {
   if flags.is_empty() {
     return page;
   }
@@ -256,7 +254,7 @@ pub fn flags(page: Roff, flags: &[Flag]) -> Roff {
 /// ```txt
 /// OPTIONS
 /// ```
-pub fn options(page: Roff, options: &[Opt]) -> Roff {
+fn options(page: Roff, options: &[Opt]) -> Roff {
   if options.is_empty() {
     return page;
   }
@@ -305,7 +303,7 @@ pub fn options(page: Roff, options: &[Opt]) -> Roff {
 /// ```txt
 /// ENVIRONMENT
 /// ```
-pub fn environment(page: Roff, environment: &[Env]) -> Roff {
+fn environment(page: Roff, environment: &[Env]) -> Roff {
   if environment.is_empty() {
     return page;
   }
@@ -353,7 +351,7 @@ pub fn environment(page: Roff, environment: &[Env]) -> Roff {
 ///
 ///        2      Optional error
 /// ```
-pub fn exit_status(page: Roff) -> Roff {
+fn exit_status(page: Roff) -> Roff {
   page.section(
     "EXIT STATUS",
     &[list(&[bold("0")], &["Successful program execution."])],
@@ -367,7 +365,6 @@ pub fn exit_status(page: Roff) -> Roff {
 // ```sh
 // $ less /usr/share/man/man1/npm-install.1
 // ```
-#[inline]
 fn init_list() -> String {
   format!(".P\n.RS 2\n.nf\n")
 }
