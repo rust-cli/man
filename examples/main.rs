@@ -1,28 +1,49 @@
-extern crate clap;
 extern crate man;
 
-use clap::{App, AppSettings, Arg, Man, SubCommand};
-use man::Manual;
+use man::Man;
 
 fn main() {
-  let a = App::new("testapp")
-    .about("Pointless application")
-    .setting(AppSettings::SubcommandRequiredElseHelp)
-    .author("Katharina Fey <kookie@spacekookie.de>")
-    // .author("Yosh Wuyts <y@w.s")
-    .long_about("Lorem Ipsum bla bla bla")
-    .arg(Arg::with_name("debug").short("d").help("Make program output debug messages"))
-    .arg(Arg::with_name("output").short("o").takes_value(true).help("Output File"))
-    .subcommand(SubCommand::with_name("foo").arg(Arg::with_name("bar").short("b").long("barr")));
+  let msg = Man::new("auth-service")
+    .description("authorize & authenticate members")
+    .argument("path".into())
+    .environment(
+      "PORT".into(),
+      None,
+      Some("The network port to listen to.".into()),
+    )
+    .flag(
+      Some("-h".into()),
+      Some("--help".into()),
+      Some("Prints help information.".into()),
+    )
+    .flag(
+      Some("-V".into()),
+      Some("--version".into()),
+      Some("Prints version information.".into()),
+    )
+    .flag(
+      Some("-v".into()),
+      Some("--verbosity".into()),
+      Some("Pass multiple times to print more information.".into()),
+    )
+    .option(
+      Some("-a".into()),
+      Some("--address".into()),
+      Some("The network address to listen to.".into()),
+      "address".into(),
+      Some("127.0.0.1".into()),
+    )
+    .option(
+      Some("-p".into()),
+      Some("--port".into()),
+      Some("The network port to listen to.".into()),
+      "port".into(),
+      None,
+    )
+    .author("Alice Person", Some("alice@person.com".into()))
+    .author("Bob Human", Some("bob@human.com".into()))
+    .render();
+  // .option(Some("-o"), Some("--output"), "output", None, "Output file");
 
-  let manual = Manual::from_clap(&a);
-  println!("{:#?}", manual);
-
-  // let page = Man::new("basic")
-  //   .description("A basic example")
-  //   .author("Alice", Some("alice@email.com"))
-  //   .author("Bob", Some("bob@email.com"))
-  //   .flag(Some("-d"), Some("--debug"), Some("Activate debug mode"))
-  //   .flag(Some("-v"), Some("--verbose"), Some("Verbose mode"));
-  //   .option(Some("-o"), Some("--output"), "output", None, "Output file");
+  println!("{}", msg);
 }
