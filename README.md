@@ -15,8 +15,8 @@ extern crate man;
 use man::prelude::*;
 
 fn main() {
-  let page = Man::new("basic")
-    .description("A basic example")
+  let page = Manual::new("basic")
+    .about("A basic example")
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .flag(Flag::new().short("-d").long("--deubg").description("Enable debug mode"))

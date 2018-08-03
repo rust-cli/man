@@ -3,7 +3,7 @@ use roff::{bold, italic, list, Roff, Troffable};
 
 /// Man page struct.
 #[derive(Debug, Clone)]
-pub struct Man {
+pub struct Manual {
   name: String,
   about: Option<String>,
   authors: Vec<Author>,
@@ -13,7 +13,7 @@ pub struct Man {
   arguments: Vec<Arg>,
 }
 
-impl Man {
+impl Manual {
   /// Create a new instance.
   pub fn new(name: &str) -> Self {
     Self {

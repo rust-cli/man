@@ -3,7 +3,7 @@ extern crate man;
 use man::prelude::*;
 
 fn main() {
-  let msg = Man::new("auth-service")
+  let msg = Manual::new("auth-service")
     .about("authorize & authenticate members".into())
     .arg(Arg::new("path"))
     .env(Env::new("PORT").help("The network port to listen to"))
