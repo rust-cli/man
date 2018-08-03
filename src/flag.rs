@@ -3,7 +3,7 @@
 pub struct Flag {
   pub(crate) short: Option<String>,
   pub(crate) long: Option<String>,
-  pub(crate) description: Option<String>,
+  pub(crate) help: Option<String>,
 }
 
 impl Flag {
@@ -12,7 +12,7 @@ impl Flag {
     Self {
       short: None,
       long: None,
-      description: None,
+      help: None,
     }
   }
 
@@ -28,9 +28,9 @@ impl Flag {
     self
   }
 
-  /// Set the description value.
-  pub fn description(mut self, description: &str) -> Self {
-    self.description = Some(description.into());
+  /// Set the help value.
+  pub fn help(mut self, help: &str) -> Self {
+    self.help = Some(help.into());
     self
   }
 }

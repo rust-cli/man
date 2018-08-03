@@ -5,7 +5,7 @@ use roff::{bold, italic, list, Roff, Troffable};
 #[derive(Debug, Clone)]
 pub struct Man {
   name: String,
-  description: Option<String>,
+  help: Option<String>,
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
@@ -18,7 +18,7 @@ impl Man {
   pub fn new(name: &str) -> Self {
     Self {
       name: name.into(),
-      description: None,
+      help: None,
       authors: vec![],
       flags: vec![],
       options: vec![],
@@ -27,9 +27,9 @@ impl Man {
     }
   }
 
-  /// Add a description.
-  pub fn description(mut self, desc: String) -> Self {
-    self.description = Some(desc);
+  /// Add a help.
+  pub fn help(mut self, desc: String) -> Self {
+    self.help = Some(desc);
     self
   }
 
@@ -69,7 +69,7 @@ impl Man {
   pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
-    page = description(page, &self.name, &self.description);
+    page = help(page, &self.name, &self.help);
     page = synopsis(
       page,
       &self.name,
@@ -91,9 +91,9 @@ impl Man {
 /// ## Formatting
 /// ```txt
 /// NAME
-///         mycmd - brief description of the application
+///         mycmd - brief help of the application
 /// ```
-fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
+fn help(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   let desc = match desc {
     Some(ref desc) => format!("{} - {}", name, desc),
     None => name.to_owned(),
@@ -188,7 +188,7 @@ fn flags(page: Roff, flags: &[Flag]) -> Roff {
       }
       args.push(bold(&long));
     }
-    let desc = match flag.description {
+    let desc = match flag.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };
@@ -237,7 +237,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
       args.push(italic(&default));
       args.push("]".into());
     }
-    let desc = match opt.description {
+    let desc = match opt.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };
@@ -276,7 +276,7 @@ fn environment(page: Roff, environment: &[Env]) -> Roff {
       args.push(italic(&default));
       args.push("]".into());
     }
-    let desc = match env.description {
+    let desc = match env.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };

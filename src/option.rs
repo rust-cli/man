@@ -3,7 +3,7 @@
 pub struct Opt {
   pub(crate) name: String,
   pub(crate) default: Option<String>,
-  pub(crate) description: Option<String>,
+  pub(crate) help: Option<String>,
   pub(crate) short: Option<String>,
   pub(crate) long: Option<String>,
 }
@@ -14,7 +14,7 @@ impl Opt {
     Self {
       name: name.into(),
       default: None,
-      description: None,
+      help: None,
       short: None,
       long: None,
     }
@@ -26,9 +26,9 @@ impl Opt {
     self
   }
 
-  /// Set the description.
-  pub fn description(mut self, description: &str) -> Self {
-    self.description = Some(description.into());
+  /// Set the help.
+  pub fn help(mut self, help: &str) -> Self {
+    self.help = Some(help.into());
     self
   }
 

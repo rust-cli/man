@@ -3,7 +3,7 @@
 pub struct Env {
   pub(crate) name: String,
   pub(crate) default: Option<String>,
-  pub(crate) description: Option<String>,
+  pub(crate) help: Option<String>,
 }
 
 impl Env {
@@ -12,7 +12,7 @@ impl Env {
     Self {
       name: name.into(),
       default: None,
-      description: None,
+      help: None,
     }
   }
 
@@ -22,9 +22,9 @@ impl Env {
     self
   }
 
-  /// Set the description.
-  pub fn description(mut self, description: &str) -> Self {
-    self.description = Some(description.into());
+  /// Set the help.
+  pub fn help(mut self, help: &str) -> Self {
+    self.help = Some(help.into());
     self
   }
 }
