@@ -5,12 +5,12 @@ use roff::{bold, italic, list, Roff, Troffable};
 #[derive(Debug, Clone)]
 pub struct Man {
   name: String,
-  help: Option<String>,
+  about: Option<String>,
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
   environment: Vec<Env>,
-  arguments: Vec<String>,
+  arguments: Vec<Arg>,
 }
 
 impl Man {
@@ -18,7 +18,7 @@ impl Man {
   pub fn new(name: &str) -> Self {
     Self {
       name: name.into(),
-      help: None,
+      about: None,
       authors: vec![],
       flags: vec![],
       options: vec![],
@@ -27,9 +27,9 @@ impl Man {
     }
   }
 
-  /// Add a help.
-  pub fn help(mut self, desc: String) -> Self {
-    self.help = Some(desc);
+  /// Add a description.
+  pub fn about(mut self, about: String) -> Self {
+    self.about = Some(about);
     self
   }
 
@@ -40,7 +40,7 @@ impl Man {
   }
 
   /// Add an environment variable.
-  pub fn environment(mut self, env: Env) -> Self {
+  pub fn env(mut self, env: Env) -> Self {
     self.environment.push(env);
     self
   }
@@ -60,8 +60,8 @@ impl Man {
   /// Add a positional argument. The items are displayed in the order they're
   /// pushed.
   // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
-  pub fn argument(mut self, arg: &str) -> Self {
-    self.arguments.push(arg.into());
+  pub fn arg(mut self, arg: Arg) -> Self {
+    self.arguments.push(arg);
     self
   }
 
@@ -69,7 +69,7 @@ impl Man {
   pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
-    page = help(page, &self.name, &self.help);
+    page = about(page, &self.name, &self.about);
     page = synopsis(
       page,
       &self.name,
@@ -79,7 +79,7 @@ impl Man {
     );
     page = flags(page, &self.flags);
     page = options(page, &self.options);
-    page = environment(page, &self.environment);
+    page = env(page, &self.environment);
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -93,7 +93,7 @@ impl Man {
 /// NAME
 ///         mycmd - brief help of the application
 /// ```
-fn help(page: Roff, name: &str, desc: &Option<String>) -> Roff {
+fn about(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   let desc = match desc {
     Some(ref desc) => format!("{} - {}", name, desc),
     None => name.to_owned(),
@@ -108,7 +108,7 @@ fn synopsis(
   name: &str,
   flags: &[Flag],
   options: &[Opt],
-  args: &[String],
+  args: &[Arg],
 ) -> Roff {
   let flags = match flags.len() {
     0 => "".into(),
@@ -125,7 +125,7 @@ fn synopsis(
   msg.push(options);
 
   for arg in args {
-    msg.push(format!(" {}", arg));
+    msg.push(format!(" {}", arg.name));
   }
 
   page.section("SYNOPSIS", &msg)
@@ -256,7 +256,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
 /// ```txt
 /// ENVIRONMENT
 /// ```
-fn environment(page: Roff, environment: &[Env]) -> Roff {
+fn env(page: Roff, environment: &[Env]) -> Roff {
   if environment.is_empty() {
     return page;
   }

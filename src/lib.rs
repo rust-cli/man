@@ -5,6 +5,7 @@
 
 extern crate roff;
 
+mod arg;
 mod author;
 mod environment;
 mod flag;
@@ -13,6 +14,7 @@ mod option;
 
 pub mod prelude;
 
+pub use arg::Arg;
 pub use author::Author;
 pub use environment::Env;
 pub use flag::Flag;
