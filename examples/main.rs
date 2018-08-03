@@ -1,47 +1,38 @@
 extern crate man;
 
-use man::Man;
+use man::prelude::*;
 
 fn main() {
   let msg = Man::new("auth-service")
-    .description("authorize & authenticate members")
-    .argument("path".into())
-    .environment(
-      "PORT".into(),
-      None,
-      Some("The network port to listen to.".into()),
+    .description("authorize & authenticate members".into())
+    .argument("path")
+    .environment(Env::new("PORT").description("The network port to listen to"))
+    .flag(
+      Flag::new()
+        .short("-h")
+        .long("--help")
+        .description("Prints help information"),
     )
     .flag(
-      Some("-h".into()),
-      Some("--help".into()),
-      Some("Prints help information.".into()),
+      Flag::new()
+        .short("-V")
+        .long("--version")
+        .description("Prints version information"),
     )
     .flag(
-      Some("-V".into()),
-      Some("--version".into()),
-      Some("Prints version information.".into()),
-    )
-    .flag(
-      Some("-v".into()),
-      Some("--verbosity".into()),
-      Some("Pass multiple times to print more information.".into()),
+      Flag::new()
+        .short("-v")
+        .long("--verbosity")
+        .description("Pass multiple times to print more information"),
     )
     .option(
-      Some("-a".into()),
-      Some("--address".into()),
-      Some("The network address to listen to.".into()),
-      "address".into(),
-      Some("127.0.0.1".into()),
+      Opt::new("port")
+        .short("-p")
+        .long("--port")
+        .description("The network port to listen to"),
     )
-    .option(
-      Some("-p".into()),
-      Some("--port".into()),
-      Some("The network port to listen to.".into()),
-      "port".into(),
-      None,
-    )
-    .author("Alice Person", Some("alice@person.com".into()))
-    .author("Bob Human", Some("bob@human.com".into()))
+    .author(Author::new("Alice Person").email("alice@person.com"))
+    .author(Author::new("Bob Human").email("bob@human.com"))
     .render();
   // .option(Some("-o"), Some("--output"), "output", None, "Output file");
 

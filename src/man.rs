@@ -60,8 +60,8 @@ impl Man {
   /// Add a positional argument. The items are displayed in the order they're
   /// pushed.
   // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
-  pub fn argument(mut self, arg: String) -> Self {
-    self.arguments.push(arg);
+  pub fn argument(mut self, arg: &str) -> Self {
+    self.arguments.push(arg.into());
     self
   }
 
