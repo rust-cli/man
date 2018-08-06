@@ -307,7 +307,11 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 fn exit_status(page: Roff) -> Roff {
   page.section(
     "EXIT STATUS",
-    &[list(&[bold("0")], &["Successful program execution."])],
+    &[
+      list(&[bold("0")], &["Successful program execution.\n\n"]),
+      list(&[bold("1")], &["Unsuccessful program execution.\n\n"]),
+      list(&[bold("101")], &["The program panicked."]),
+    ],
   )
 }
 
