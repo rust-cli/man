@@ -28,8 +28,8 @@ impl Manual {
   }
 
   /// Add a description.
-  pub fn about(mut self, about: String) -> Self {
-    self.about = Some(about);
+  pub fn about<S: Into<String>>(mut self, about: S) -> Self {
+    self.about = Some(about.into());
     self
   }
 
