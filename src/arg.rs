@@ -1,3 +1,4 @@
+/// Positional arguments.
 #[derive(Debug, Clone)]
 pub struct Arg {
   pub(crate) name: String,

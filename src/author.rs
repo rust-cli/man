@@ -1,4 +1,4 @@
-/// An author entry.
+/// Application authors.
 #[derive(Debug, Clone)]
 pub struct Author {
   pub(crate) name: String,
