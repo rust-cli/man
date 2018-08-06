@@ -19,9 +19,9 @@ fn main() {
     .about("A basic example")
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
-    .flag(Flag::new().short("-d").long("--deubg").description("Enable debug mode"))
+    .flag(Flag::new().short("-d").long("--debug").description("Enable debug mode"))
     .flag(Flag::new().short("-v").long("--verbose").description("Enable verbose mode"))
-    .option(Opt::new("output").short("-o").long("--output").description("Output file"));
+    .option(Opt::new("output").short("-o").long("--output").description("The file path to write output to"));
 
   let _string = page.render();
 }
@@ -29,6 +29,38 @@ fn main() {
 Preview by running:
 ```sh
 $ cargo run > /tmp/app.man; man /tmp/app.man
+```
+Which outputs:
+```txt
+BASIC(1)                                             General Commands Manual                                             BASIC(1)
+
+NAME
+       basic - A basic example
+
+SYNOPSIS
+       basic [FLAGS] [OPTIONS]
+
+FLAGS
+       -d, --debug
+              Enable debug mode.
+
+       -v, --verbose
+              Enable verbose mode
+
+OPTIONS
+       -o, --output=output
+              The file path to write output to.
+
+EXIT STATUS
+       0      Successful program execution.
+
+       1      Unsuccessful program execution.
+
+       101    The program panicked.
+
+AUTHORS
+         Alice Person <alice@person.com>
+         Bob Human <bob@human.com>
 ```
 
 ## Installation
