@@ -4,7 +4,7 @@ use man::prelude::*;
 
 fn main() {
   let msg = Manual::new("auth-service")
-    .about("authorize & authenticate members".into())
+    .about("authorize & authenticate members")
     .arg(Arg::new("path"))
     .env(Env::new("PORT").help("The network port to listen to"))
     .flag(
