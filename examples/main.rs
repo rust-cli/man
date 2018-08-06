@@ -1,28 +1,40 @@
-extern crate clap;
 extern crate man;
 
-use clap::{App, AppSettings, Arg, Man, SubCommand};
-use man::Manual;
+use man::prelude::*;
 
 fn main() {
-  let a = App::new("testapp")
-    .about("Pointless application")
-    .setting(AppSettings::SubcommandRequiredElseHelp)
-    .author("Katharina Fey <kookie@spacekookie.de>")
-    // .author("Yosh Wuyts <y@w.s")
-    .long_about("Lorem Ipsum bla bla bla")
-    .arg(Arg::with_name("debug").short("d").help("Make program output debug messages"))
-    .arg(Arg::with_name("output").short("o").takes_value(true).help("Output File"))
-    .subcommand(SubCommand::with_name("foo").arg(Arg::with_name("bar").short("b").long("barr")));
+  let msg = Manual::new("auth-service")
+    .about("authorize & authenticate members".into())
+    .arg(Arg::new("path"))
+    .env(Env::new("PORT").help("The network port to listen to"))
+    .flag(
+      Flag::new()
+        .short("-h")
+        .long("--help")
+        .help("Prints help information."),
+    )
+    .flag(
+      Flag::new()
+        .short("-V")
+        .long("--version")
+        .help("Prints version information."),
+    )
+    .flag(
+      Flag::new()
+        .short("-v")
+        .long("--verbosity")
+        .help("Pass multiple times to print more information."),
+    )
+    .option(
+      Opt::new("port")
+        .short("-p")
+        .long("--port")
+        .help("The network port to listen to."),
+    )
+    .author(Author::new("Alice Person").email("alice@person.com"))
+    .author(Author::new("Bob Human").email("bob@human.com"))
+    .render();
+  // .option(Some("-o"), Some("--output"), "output", None, "Output file");
 
-  let manual = Manual::from_clap(&a);
-  println!("{:#?}", manual);
-
-  // let page = Man::new("basic")
-  //   .description("A basic example")
-  //   .author("Alice", Some("alice@email.com"))
-  //   .author("Bob", Some("bob@email.com"))
-  //   .flag(Some("-d"), Some("--debug"), Some("Activate debug mode"))
-  //   .flag(Some("-v"), Some("--verbose"), Some("Verbose mode"));
-  //   .option(Some("-o"), Some("--output"), "output", None, "Output file");
+  println!("{}", msg);
 }

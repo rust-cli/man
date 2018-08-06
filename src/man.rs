@@ -1,33 +1,24 @@
-mod author;
-mod environment;
-mod flag;
-mod option;
-
-use self::author::Author;
-use self::environment::Env;
-use self::flag::Flag;
-use self::option::Opt;
+use super::*;
 use roff::{bold, italic, list, Roff, Troffable};
-use std::convert::AsRef;
 
 /// Man page struct.
 #[derive(Debug, Clone)]
-pub struct Man {
+pub struct Manual {
   name: String,
-  description: Option<String>,
+  about: Option<String>,
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
   environment: Vec<Env>,
-  arguments: Vec<String>,
+  arguments: Vec<Arg>,
 }
 
-impl Man {
+impl Manual {
   /// Create a new instance.
   pub fn new(name: &str) -> Self {
     Self {
       name: name.into(),
-      description: None,
+      about: None,
       authors: vec![],
       flags: vec![],
       options: vec![],
@@ -37,86 +28,48 @@ impl Man {
   }
 
   /// Add a description.
-  pub fn description(mut self, desc: &str) -> Self {
-    let desc = desc.into();
-    self.description = Some(desc);
+  pub fn about(mut self, about: String) -> Self {
+    self.about = Some(about);
     self
   }
 
   /// Add an author.
-  pub fn author(
-    mut self,
-    name: impl AsRef<str>,
-    email: Option<String>,
-  ) -> Self {
-    self.authors.push(Author {
-      name: name.as_ref().to_owned(),
-      email,
-    });
+  pub fn author(mut self, author: Author) -> Self {
+    self.authors.push(author);
     self
   }
 
   /// Add an environment variable.
-  pub fn environment(
-    mut self,
-    name: String,
-    default: Option<String>,
-    description: Option<String>,
-  ) -> Self {
-    self.environment.push(Env {
-      name,
-      default,
-      description,
-    });
+  pub fn env(mut self, env: Env) -> Self {
+    self.environment.push(env);
     self
   }
 
   /// Add an flag.
-  pub fn flag(
-    mut self,
-    short: Option<String>,
-    long: Option<String>,
-    description: Option<String>,
-  ) -> Self {
-    self.flags.push(Flag {
-      short,
-      long,
-      description,
-    });
+  pub fn flag(mut self, flag: Flag) -> Self {
+    self.flags.push(flag);
     self
   }
 
   /// Add an option.
-  pub fn option(
-    mut self,
-    short: Option<String>,
-    long: Option<String>,
-    description: Option<String>,
-    argument: String,
-    default: Option<String>,
-  ) -> Self {
-    self.options.push(Opt {
-      short,
-      long,
-      description,
-      argument,
-      default,
-    });
+  pub fn option(mut self, opt: Opt) -> Self {
+    self.options.push(opt);
     self
   }
 
   /// Add a positional argument. The items are displayed in the order they're
   /// pushed.
   // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
-  pub fn argument(mut self, arg: String) -> Self {
+  pub fn arg(mut self, arg: Arg) -> Self {
     self.arguments.push(arg);
     self
   }
 
+  /// Render to a string.
   pub fn render(self) -> String {
     let man_num = 1;
     let mut page = Roff::new(&self.name, man_num);
-    page = description(page, &self.name, &self.description);
+    page = about(page, &self.name, &self.about);
     page = synopsis(
       page,
       &self.name,
@@ -126,7 +79,7 @@ impl Man {
     );
     page = flags(page, &self.flags);
     page = options(page, &self.options);
-    page = environment(page, &self.environment);
+    page = env(page, &self.environment);
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -138,9 +91,9 @@ impl Man {
 /// ## Formatting
 /// ```txt
 /// NAME
-///         mycmd - brief description of the application
+///         mycmd - brief help of the application
 /// ```
-fn description(page: Roff, name: &str, desc: &Option<String>) -> Roff {
+fn about(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   let desc = match desc {
     Some(ref desc) => format!("{} - {}", name, desc),
     None => name.to_owned(),
@@ -155,7 +108,7 @@ fn synopsis(
   name: &str,
   flags: &[Flag],
   options: &[Opt],
-  args: &[String],
+  args: &[Arg],
 ) -> Roff {
   let flags = match flags.len() {
     0 => "".into(),
@@ -172,7 +125,7 @@ fn synopsis(
   msg.push(options);
 
   for arg in args {
-    msg.push(format!(" {}", arg));
+    msg.push(format!(" {}", arg.name));
   }
 
   page.section("SYNOPSIS", &msg)
@@ -235,7 +188,7 @@ fn flags(page: Roff, flags: &[Flag]) -> Roff {
       }
       args.push(bold(&long));
     }
-    let desc = match flag.description {
+    let desc = match flag.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };
@@ -273,7 +226,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
       args.push(bold(&long));
     }
     args.push("=".into());
-    args.push(italic(&opt.argument));
+    args.push(italic(&opt.name));
     if let Some(ref default) = opt.default {
       if !args.is_empty() {
         args.push(" ".to_string());
@@ -284,7 +237,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
       args.push(italic(&default));
       args.push("]".into());
     }
-    let desc = match opt.description {
+    let desc = match opt.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };
@@ -303,7 +256,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
 /// ```txt
 /// ENVIRONMENT
 /// ```
-fn environment(page: Roff, environment: &[Env]) -> Roff {
+fn env(page: Roff, environment: &[Env]) -> Roff {
   if environment.is_empty() {
     return page;
   }
@@ -323,7 +276,7 @@ fn environment(page: Roff, environment: &[Env]) -> Roff {
       args.push(italic(&default));
       args.push("]".into());
     }
-    let desc = match env.description {
+    let desc = match env.help {
       Some(ref desc) => desc.to_string(),
       None => "".to_string(),
     };
@@ -354,7 +307,11 @@ fn environment(page: Roff, environment: &[Env]) -> Roff {
 fn exit_status(page: Roff) -> Roff {
   page.section(
     "EXIT STATUS",
-    &[list(&[bold("0")], &["Successful program execution."])],
+    &[
+      list(&[bold("0")], &["Successful program execution.\n\n"]),
+      list(&[bold("1")], &["Unsuccessful program execution.\n\n"]),
+      list(&[bold("101")], &["The program panicked."]),
+    ],
   )
 }
 

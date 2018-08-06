@@ -12,18 +12,18 @@ Generate structured man pages using
 ```rust
 extern crate man;
 
-use man::Man;
+use man::prelude::*;
 
 fn main() {
-  let page = Man::new("basic")
-    .description("A basic example")
-    .author("Alice", Some("alice@email.com"))
-    .author("Bob", Some("bob@email.com"))
-    .flag(Some("-d"), Some("--debug"), Some("Activate debug mode"))
-    .flag(Some("-v"), Some("--verbose"), Some("Verbose mode"));
-    .option(Some("-o"), Some("--output"), "output", None, "Output file");
+  let page = Manual::new("basic")
+    .about("A basic example")
+    .author(Author::new("Alice Person").email("alice@person.com"))
+    .author(Author::new("Bob Human").email("bob@human.com"))
+    .flag(Flag::new().short("-d").long("--deubg").description("Enable debug mode"))
+    .flag(Flag::new().short("-v").long("--verbose").description("Enable verbose mode"))
+    .option(Opt::new("output").short("-o").long("--output").description("Output file"));
 
-  let _string = page.to_string();
+  let _string = page.render();
 }
 ```
 Preview by running:
