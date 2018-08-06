@@ -6,7 +6,7 @@
 //! use man::prelude::*;
 //!
 //! fn main () {
-//!   let msg = Man::new("my-app").render();
+//!   let msg = Manual::new("my-app").render();
 //! }
 //! ```
 pub use arg::Arg;
