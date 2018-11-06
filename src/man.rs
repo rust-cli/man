@@ -1,7 +1,7 @@
 use super::*;
 use roff::{bold, italic, list, Roff, Troffable};
 
-/// Man page struct.
+/// The main man page struct.
 #[derive(Debug, Clone)]
 pub struct Manual {
   name: String,

@@ -1,4 +1,4 @@
-/// Command line flag representation.
+/// Boolean arguments that can be toggled on or off.
 #[derive(Debug, Clone)]
 pub struct Flag {
   pub(crate) short: Option<String>,

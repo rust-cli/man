@@ -1,4 +1,4 @@
-/// Command line environment variable representation.
+/// Arguments that are passed by the executing shell.
 #[derive(Debug, Clone)]
 pub struct Env {
   pub(crate) name: String,

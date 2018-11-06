@@ -1,4 +1,4 @@
-/// Option
+/// Arguments that take values.
 #[derive(Debug, Clone)]
 pub struct Opt {
   pub(crate) name: String,
