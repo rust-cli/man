@@ -181,7 +181,7 @@ fn authors(page: Roff, authors: &[Author]) -> Roff {
     };
 
     if index != last {
-      auth_values.push(format!("\n"));
+      auth_values.push(String::from("\n"));
     }
   }
 
@@ -219,7 +219,7 @@ fn flags(page: Roff, flags: &[Flag]) -> Roff {
     arr.push(list(&args, &[desc]));
 
     if index != last {
-      arr.push(format!("\n\n"));
+      arr.push(String::from("\n\n"));
     }
   }
   page.section("FLAGS", &arr)
@@ -268,7 +268,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
     arr.push(list(&args, &[desc]));
 
     if index != last {
-      arr.push(format!("\n\n"));
+      arr.push(String::from("\n\n"));
     }
   }
   page.section("OPTIONS", &arr)
@@ -277,6 +277,7 @@ fn options(page: Roff, options: &[Opt]) -> Roff {
 /// Create a `ENVIRONMENT` section.
 ///
 /// ## Formatting
+///
 /// ```txt
 /// ENVIRONMENT
 /// ```
@@ -307,7 +308,7 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
     arr.push(list(&args, &[desc]));
 
     if index != last {
-      arr.push(format!("\n\n"));
+      arr.push(String::from("\n\n"));
     }
   }
   page.section("ENVIRONMENT", &arr)
@@ -347,5 +348,5 @@ fn exit_status(page: Roff) -> Roff {
 // $ less /usr/share/man/man1/npm-install.1
 // ```
 fn init_list() -> String {
-  format!(".P\n.RS 2\n.nf\n")
+  String::from(".P\n.RS 2\n.nf\n")
 }

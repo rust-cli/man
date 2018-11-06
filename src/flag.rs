@@ -1,5 +1,5 @@
 /// Boolean arguments that can be toggled on or off.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Flag {
   pub(crate) short: Option<String>,
   pub(crate) long: Option<String>,
@@ -9,11 +9,7 @@ pub struct Flag {
 impl Flag {
   /// Create a new instance.
   pub fn new() -> Self {
-    Self {
-      short: None,
-      long: None,
-      help: None,
-    }
+    Self::default()
   }
 
   /// Set the short value.
