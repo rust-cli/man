@@ -12,26 +12,22 @@ fn main() {
         .short("-h")
         .long("--help")
         .help("Prints help information."),
-    )
-    .flag(
+    ).flag(
       Flag::new()
         .short("-V")
         .long("--version")
         .help("Prints version information."),
-    )
-    .flag(
+    ).flag(
       Flag::new()
         .short("-v")
         .long("--verbosity")
         .help("Pass multiple times to print more information."),
-    )
-    .option(
+    ).option(
       Opt::new("port")
         .short("-p")
         .long("--port")
         .help("The network port to listen to."),
-    )
-    .author(Author::new("Alice Person").email("alice@person.com"))
+    ).author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .render();
   // .option(Some("-o"), Some("--output"), "output", None, "Output file");
