@@ -6,6 +6,7 @@ use roff::{bold, italic, list, Roff, Troffable};
 pub struct Manual {
   name: String,
   about: Option<String>,
+  description: Option<String>,
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
@@ -19,6 +20,7 @@ impl Manual {
     Self {
       name: name.into(),
       about: None,
+      description: None,
       authors: vec![],
       flags: vec![],
       options: vec![],
@@ -27,9 +29,15 @@ impl Manual {
     }
   }
 
-  /// Add a description.
+  /// Add a short description.
   pub fn about<S: Into<String>>(mut self, about: S) -> Self {
     self.about = Some(about.into());
+    self
+  }
+
+  /// Add a long description.
+  pub fn description<S: Into<String>>(mut self, description: S) -> Self {
+    self.description = Some(description.into());
     self
   }
 
@@ -77,6 +85,7 @@ impl Manual {
       &self.options,
       &self.arguments,
     );
+    page = description(page, &self.description);
     page = flags(page, &self.flags);
     page = options(page, &self.options);
     page = env(page, &self.environment);
@@ -100,6 +109,21 @@ fn about(page: Roff, name: &str, desc: &Option<String>) -> Roff {
   };
 
   page.section("NAME", &[desc])
+}
+
+/// Create a `DESCRIPTION` section.
+///
+/// ## Formatting
+/// ```txt
+/// DESCRIPTION
+///         Very long description of the application
+/// ```
+fn description(page: Roff, desc: &Option<String>) -> Roff {
+  if let Some(desc) = desc {
+    page.section("DESCRIPTION", &[desc.to_owned()])
+  } else {
+    page
+  }
 }
 
 /// Create a `SYNOPSIS` section.
