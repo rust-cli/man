@@ -78,9 +78,11 @@ AUTHORS
 ```
 
 ## Installation
+If using [cargo-edit](https://github.com/killercup/cargo-edit), install with
 ```sh
 $ cargo add man
 ```
+Otherwise, install by adding to Cargo.toml file's dependency section.
 
 ## License
 [MIT](./LICENSE-MIT) OR [Apache-2.0](./LICENSE-APACHE)
