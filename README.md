@@ -10,20 +10,34 @@ Generate structured man pages using
 
 ## Usage
 ```rust
-extern crate man;
-
 use man::prelude::*;
 
 fn main() {
-  let page = Manual::new("basic")
-    .about("A basic example")
-    .author(Author::new("Alice Person").email("alice@person.com"))
-    .author(Author::new("Bob Human").email("bob@human.com"))
-    .flag(Flag::new().short("-d").long("--debug").description("Enable debug mode"))
-    .flag(Flag::new().short("-v").long("--verbose").description("Enable verbose mode"))
-    .option(Opt::new("output").short("-o").long("--output").description("The file path to write output to"));
+    let page = Manual::new("basic")
+        .about("A basic example")
+        .author(Author::new("Alice Person").email("alice@person.com"))
+        .author(Author::new("Bob Human").email("bob@human.com"))
+        .flag(
+            Flag::new()
+                .short("-d")
+                .long("--debug")
+                .help("Enable debug mode"),
+        )
+        .flag(
+            Flag::new()
+                .short("-v")
+                .long("--verbose")
+                .help("Enable verbose mode"),
+        )
+        .option(
+            Opt::new("output")
+                .short("-o")
+                .long("--output")
+                .help("The file path to write output to"),
+        )
+        .render();
 
-  let _string = page.render();
+    println!("{}", page);
 }
 ```
 Preview by running:
@@ -64,9 +78,11 @@ AUTHORS
 ```
 
 ## Installation
+If using [cargo-edit](https://github.com/killercup/cargo-edit), install with
 ```sh
 $ cargo add man
 ```
+Otherwise, install by adding to Cargo.toml file's dependency section.
 
 ## License
 [MIT](./LICENSE-MIT) OR [Apache-2.0](./LICENSE-APACHE)
