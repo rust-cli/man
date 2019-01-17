@@ -31,6 +31,11 @@ fn main() {
         .long("--port")
         .help("The network port to listen to."),
     )
+    .custom(
+      Sec::new("custom section")
+        .paragraph("text for the custom section")
+        .paragraph("Additional text for the custom section"),
+    )
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .render();

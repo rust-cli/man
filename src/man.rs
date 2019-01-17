@@ -351,6 +351,20 @@ fn exit_status(page: Roff) -> Roff {
   )
 }
 
+/// Create a custom section.
+///
+/// The custom section will have the title you specify as the argument to the
+/// .new() method and may optionally be followed by one or more paragraphs
+/// using the .paragraph() method.
+///
+/// ## Formatting
+/// ```txt
+/// SECTION NAME
+///        Text of first paragraph
+///
+///        Text of second paragraph
+///
+/// ```
 fn custom(page: Roff, custom_section: Sec) -> Roff {
   let mut paragraphs: Vec<String> = vec![];
   for paragraph in custom_section.paragraphs.into_iter() {
