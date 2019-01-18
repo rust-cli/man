@@ -36,7 +36,7 @@ fn main() {
                 .help("The file path to write output to"),
         )
         .custom(
-            Sec::new("usage note")
+            Section::new("usage note")
                 .paragraph("This program will overwrite any file currently stored at the output path")
         )
         .render();

@@ -32,7 +32,7 @@ fn main() {
         .help("The network port to listen to."),
     )
     .custom(
-      Sec::new("custom section")
+      Section::new("custom section")
         .paragraph("text for the custom section")
         .paragraph("Additional text for the custom section"),
     )
