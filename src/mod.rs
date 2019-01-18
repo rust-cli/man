@@ -1,9 +1,11 @@
 mod author;
+mod custom;
 mod environment;
 mod flag;
 mod option;
 
 use self::author::Author;
+use self::custom::Para;
 use self::environment::Env;
 use self::flag::Flag;
 use self::option::Opt;
@@ -20,6 +22,7 @@ pub struct Man {
   options: Vec<Opt>,
   environment: Vec<Env>,
   arguments: Vec<String>,
+  custom: Vec<Para>,
 }
 
 impl Man {
@@ -78,11 +81,7 @@ impl Man {
     long: Option<String>,
     help: Option<String>,
   ) -> Self {
-    self.flags.push(Flag {
-      short,
-      long,
-      help,
-    });
+    self.flags.push(Flag { short, long, help });
     self
   }
 

@@ -35,6 +35,10 @@ fn main() {
                 .long("--output")
                 .help("The file path to write output to"),
         )
+        .custom(
+            Section::new("usage note")
+                .paragraph("This program will overwrite any file currently stored at the output path")
+        )
         .render();
 
     println!("{}", page);
@@ -56,15 +60,17 @@ SYNOPSIS
 
 FLAGS
        -d, --debug
-              Enable debug mode.
+              Enable debug mode
 
        -v, --verbose
               Enable verbose mode
 
 OPTIONS
        -o, --output=output
-              The file path to write output to.
+              The file path to write output to
 
+USAGE NOTE
+       This file will overwrite any file currently stored at the output path.
 EXIT STATUS
        0      Successful program execution.
 

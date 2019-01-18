@@ -11,6 +11,7 @@ mod environment;
 mod flag;
 mod man;
 mod option;
+mod section;
 
 pub mod prelude;
 
@@ -20,3 +21,4 @@ pub use environment::Env;
 pub use flag::Flag;
 pub use man::Manual;
 pub use option::Opt;
+pub use section::Section;

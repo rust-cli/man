@@ -12,6 +12,7 @@ pub struct Manual {
   options: Vec<Opt>,
   environment: Vec<Env>,
   arguments: Vec<Arg>,
+  custom_sections: Vec<Section>,
 }
 
 impl Manual {
@@ -26,6 +27,7 @@ impl Manual {
       options: vec![],
       arguments: vec![],
       environment: vec![],
+      custom_sections: vec![],
     }
   }
 
@@ -65,6 +67,12 @@ impl Manual {
     self
   }
 
+  /// Add a custom section
+  pub fn custom(mut self, custom_section: Section) -> Self {
+    self.custom_sections.push(custom_section);
+    self
+  }
+
   /// Add a positional argument. The items are displayed in the order they're
   /// pushed.
   // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
@@ -89,6 +97,9 @@ impl Manual {
     page = flags(page, &self.flags);
     page = options(page, &self.options);
     page = env(page, &self.environment);
+    for section in self.custom_sections.into_iter() {
+      page = custom(page, section);
+    }
     page = exit_status(page);
     page = authors(page, &self.authors);
     page.render()
@@ -338,6 +349,29 @@ fn exit_status(page: Roff) -> Roff {
       list(&[bold("101")], &["The program panicked."]),
     ],
   )
+}
+
+/// Create a custom section.
+///
+/// The custom section will have the title you specify as the argument to the
+/// .new() method and may optionally be followed by one or more paragraphs
+/// using the .paragraph() method.
+///
+/// ## Formatting
+/// ```txt
+/// SECTION NAME
+///        Text of first paragraph
+///
+///        Text of second paragraph
+///
+/// ```
+fn custom(page: Roff, custom_section: Section) -> Roff {
+  let mut paragraphs: Vec<String> = vec![];
+  for paragraph in custom_section.paragraphs.into_iter() {
+    paragraphs.push(paragraph);
+    paragraphs.push("\n\n".into())
+  }
+  page.section(&custom_section.name, &paragraphs)
 }
 
 // NOTE(yw): This code was taken from the npm-install(1) command. The location
