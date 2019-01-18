@@ -1,11 +1,11 @@
-/// Positional arguments.
+/// Add a custom section
 #[derive(Debug, Clone)]
-pub struct Sec {
+pub struct Section {
   pub(crate) name: String,
   pub(crate) paragraphs: Vec<String>,
 }
 
-impl Sec {
+impl Section {
   pub fn new(name: &str) -> Self {
     Self {
       name: name.into(),

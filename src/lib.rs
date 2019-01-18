@@ -21,4 +21,4 @@ pub use environment::Env;
 pub use flag::Flag;
 pub use man::Manual;
 pub use option::Opt;
-pub use section::Sec;
+pub use section::Section;

@@ -12,7 +12,7 @@ pub struct Manual {
   options: Vec<Opt>,
   environment: Vec<Env>,
   arguments: Vec<Arg>,
-  custom_sections: Vec<Sec>,
+  custom_sections: Vec<Section>,
 }
 
 impl Manual {
@@ -68,7 +68,7 @@ impl Manual {
   }
 
   /// Add a custom section
-  pub fn custom(mut self, custom_section: Sec) -> Self {
+  pub fn custom(mut self, custom_section: Section) -> Self {
     self.custom_sections.push(custom_section);
     self
   }
@@ -365,7 +365,7 @@ fn exit_status(page: Roff) -> Roff {
 ///        Text of second paragraph
 ///
 /// ```
-fn custom(page: Roff, custom_section: Sec) -> Roff {
+fn custom(page: Roff, custom_section: Section) -> Roff {
   let mut paragraphs: Vec<String> = vec![];
   for paragraph in custom_section.paragraphs.into_iter() {
     paragraphs.push(paragraph);
