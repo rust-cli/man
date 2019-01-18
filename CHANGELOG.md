@@ -1,3 +1,28 @@
+## 2019-01-18, Version 0.2.0
+### Commits
+- [[`be9f474a8d`](https://github.com/rust-clique/man/commit/be9f474a8d468f1ee5dcbcb265b1622f9d7b4b07)] (cargo-release) version 0.2.0 (Yoshua Wuyts)
+- [[`ebea68ae03`](https://github.com/rust-clique/man/commit/ebea68ae036d85e675cfed68e0f81ea3c8f61048)] Add custom section (#24) (Daniel Sockwell)
+- [[`dd0ae08a4d`](https://github.com/rust-clique/man/commit/dd0ae08a4d7a3e5fbe6a5ba6c7921bd4243b8322)] Merge pull request #23 from codesections/README-example (Dylan DPC)
+- [[`5f703ae61a`](https://github.com/rust-clique/man/commit/5f703ae61a54881420a56428fb4469e3806e3042)] fmt (dylan_DPC)
+- [[`f876dd271d`](https://github.com/rust-clique/man/commit/f876dd271d888c3883ed4f86ed962ca9dd223726)] Clarify installation instructions (Daniel Sockwell)
+- [[`3c4d7c27a1`](https://github.com/rust-clique/man/commit/3c4d7c27a1e090160f11ec908a1108d7949b0569)] Fix usage example (Daniel Sockwell)
+- [[`48882c80fa`](https://github.com/rust-clique/man/commit/48882c80fa711c2a561aa93486bbe243a1262673)] Update changelog (Yoshua Wuyts)
+
+### Stats
+```diff
+ CHANGELOG.md     | 34 ++++++++++++++++++++++++++++++++++
+ Cargo.toml       |  2 +-
+ README.md        | 48 +++++++++++++++++++++++++++++++++++-------------
+ examples/main.rs | 17 +++++++++++++----
+ src/lib.rs       |  2 ++
+ src/man.rs       | 34 ++++++++++++++++++++++++++++++++++
+ src/mod.rs       |  9 ++++-----
+ src/prelude.rs   |  1 +
+ src/section.rs   | 20 ++++++++++++++++++++
+ 9 files changed, 144 insertions(+), 23 deletions(-)
+```
+
+
 ## 2018-11-07, Version 0.1.1
 ### Commits
 - [[`163c3a0cbe`](https://github.com/rust-clique/man/commit/163c3a0cbe54af4e8431ed1ae72cc413d5dbf5ed)] (cargo-release) version 0.1.1 (Yoshua Wuyts)
