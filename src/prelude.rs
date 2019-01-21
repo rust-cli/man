@@ -12,6 +12,7 @@
 pub use arg::Arg;
 pub use author::Author;
 pub use environment::Env;
+pub use example::Example;
 pub use flag::Flag;
 pub use man::Manual;
 pub use option::Opt;
