@@ -13,6 +13,7 @@ pub struct Manual {
   environment: Vec<Env>,
   arguments: Vec<Arg>,
   custom_sections: Vec<Section>,
+  exit_statuses: Vec<ExitStatus>,
 }
 
 impl Manual {
@@ -28,6 +29,7 @@ impl Manual {
       arguments: vec![],
       environment: vec![],
       custom_sections: vec![],
+      exit_statuses: vec![],
     }
   }
 
@@ -81,6 +83,11 @@ impl Manual {
     self
   }
 
+  pub fn exit_status(mut self, exit_status: ExitStatus) -> Self {
+    self.exit_statuses.push(exit_status);
+    self
+  }
+
   /// Render to a string.
   pub fn render(self) -> String {
     let man_num = 1;
@@ -100,7 +107,7 @@ impl Manual {
     for section in self.custom_sections.into_iter() {
       page = custom(page, section);
     }
-    page = exit_status(page);
+    page = exit_status(page, &self.exit_statuses);
     page = authors(page, &self.authors);
     page.render()
   }
@@ -327,9 +334,9 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 
 /// Create a `EXIT STATUS` section.
 ///
-/// ## Implementation Note
-/// This currently only returns the status code `0`, and takes no arguments. We
-/// should let it take arguments.
+/// If initialized with the default method, this will have status codes of 0
+/// (success), 1 (failure), and 101 (panic).  Alternatively, it can be initialized
+/// with custom codes and descriptions.
 ///
 /// ## Formatting
 /// ```txt
@@ -340,15 +347,32 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 ///
 ///        2      Optional error
 /// ```
-fn exit_status(page: Roff) -> Roff {
-  page.section(
-    "EXIT STATUS",
-    &[
+fn exit_status(page: Roff, exit_statuses: &[ExitStatus]) -> Roff {
+  if exit_statuses.is_empty() {
+    return page;
+  }
+  let arr = if exit_statuses
+    .iter()
+    .any(|status| status.use_default_instead)
+  {
+    vec![
       list(&[bold("0")], &["Successful program execution.\n\n"]),
       list(&[bold("1")], &["Unsuccessful program execution.\n\n"]),
       list(&[bold("101")], &["The program panicked."]),
-    ],
-  )
+    ]
+  } else {
+    let mut arr = vec![];
+    for exit_status in exit_statuses {
+      let exit_code =
+        format!("{}", exit_status.code.expect("initialized with value"));
+      let mut exit_description =
+        String::from(exit_status.description.unwrap_or(""));
+      exit_description.push_str("\n\n");
+      arr.push(list(&[bold(&exit_code)], &[exit_description]));
+    }
+    arr
+  };
+  page.section("EXIT STATUS", &arr)
 }
 
 /// Create a custom section.

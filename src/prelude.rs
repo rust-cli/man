@@ -12,6 +12,7 @@
 pub use arg::Arg;
 pub use author::Author;
 pub use environment::Env;
+pub use exit_status::ExitStatus;
 pub use flag::Flag;
 pub use man::Manual;
 pub use option::Opt;

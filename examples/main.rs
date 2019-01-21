@@ -36,6 +36,7 @@ fn main() {
         .paragraph("text for the custom section")
         .paragraph("Additional text for the custom section"),
     )
+    .exit_status(ExitStatus::default())
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .render();
