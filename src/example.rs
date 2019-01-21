@@ -37,8 +37,3 @@ impl Example {
     self
   }
 }
-
-// pub fn paragraph(mut self, text: &str) -> Self {
-//   self.paragraphs.push(text.into());
-//   self
-// }
