@@ -1,5 +1,5 @@
 /// Add a examples section
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Example {
   pub(crate) prompt: &'static str,
   pub(crate) text: Option<&'static str>,
