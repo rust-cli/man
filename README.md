@@ -15,6 +15,8 @@ use man::prelude::*;
 fn main() {
     let page = Manual::new("basic")
         .about("A basic example")
+        .date("January, 2019")
+        .version(env!("CARGO_PKG_VERSION"))
         .author(Author::new("Alice Person").email("alice@person.com"))
         .author(Author::new("Bob Human").email("bob@human.com"))
         .flag(
@@ -50,7 +52,7 @@ $ cargo run > /tmp/app.man; man /tmp/app.man
 ```
 Which outputs:
 ```txt
-BASIC(1)                                             General Commands Manual                                             BASIC(1)
+BASIC(1)                                             USER COMMANDS                                              BASIC(1)
 
 NAME
        basic - A basic example
@@ -81,6 +83,7 @@ EXIT STATUS
 AUTHORS
          Alice Person <alice@person.com>
          Bob Human <bob@human.com>
+1.0.2                                                 January, 2019                                             BASIC(1)          
 ```
 
 ## Installation
