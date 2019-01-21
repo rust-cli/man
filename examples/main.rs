@@ -31,6 +31,18 @@ fn main() {
         .long("--port")
         .help("The network port to listen to."),
     )
+    .example(
+      Example::new()
+        .text("listen on port 3000")
+        .command("auth-service -p 3000")
+        .output("now listening on port 3000"),
+    )
+    .example(
+      Example::new()
+        .text("auth-service may need to be run by root")
+        .prompt("#")
+        .command("auth-service"),
+    )
     .custom(
       Section::new("custom section")
         .paragraph("text for the custom section")

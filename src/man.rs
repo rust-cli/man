@@ -13,6 +13,7 @@ pub struct Manual {
   environment: Vec<Env>,
   arguments: Vec<Arg>,
   custom_sections: Vec<Section>,
+  examples: Vec<Example>,
 }
 
 impl Manual {
@@ -28,6 +29,7 @@ impl Manual {
       arguments: vec![],
       environment: vec![],
       custom_sections: vec![],
+      examples: vec![],
     }
   }
 
@@ -73,6 +75,12 @@ impl Manual {
     self
   }
 
+  /// Add an examples section
+  pub fn example(mut self, example: Example) -> Self {
+    self.examples.push(example);
+    self
+  }
+
   /// Add a positional argument. The items are displayed in the order they're
   /// pushed.
   // TODO: make this accept argument vecs / optional args too.  `arg...`, `arg?`
@@ -101,6 +109,7 @@ impl Manual {
       page = custom(page, section);
     }
     page = exit_status(page);
+    page = examples(page, &self.examples);
     page = authors(page, &self.authors);
     page.render()
   }
@@ -372,6 +381,51 @@ fn custom(page: Roff, custom_section: Section) -> Roff {
     paragraphs.push("\n\n".into())
   }
   page.section(&custom_section.name, &paragraphs)
+}
+
+/// Create an examples section
+///
+/// examples can have text (shown before the example command) and the command
+/// itself.  Optionally, you can also display the output of the command, but
+/// this is typically not necessary.  You may also change the prompt displayed
+/// before the command (the default is `$`).
+///
+/// The command is printed in bold.
+///
+/// ## Formatting
+/// ```txt
+/// EXAMPLES
+///        Explanatory text
+///        $ command
+///        output
+/// ```
+fn examples(page: Roff, examples: &[Example]) -> Roff {
+  if examples.is_empty() {
+    return page;
+  };
+  let mut arr = vec![];
+  for example in examples {
+    let text = example.text.unwrap_or("");
+    let mut full_command = String::from(example.prompt);
+    if let Some(command) = example.command {
+      full_command.push_str(" ");
+      full_command.push_str(command);
+    };
+    let output = match example.output {
+      Some(output) => {
+        // For now, we need to manually add the line break in the list
+        // see https://github.com/killercup/roff-rs/issues/5
+        let mut full_output = String::from("\n.br\n");
+        full_output.push_str(output);
+        full_output.push_str("\n");
+        full_output
+      }
+      None => String::from("\n"),
+    };
+    let example = list(&[text], &[bold(full_command.as_str()), output]);
+    arr.push(example);
+  }
+  page.section("examples", &arr)
 }
 
 // NOTE(yw): This code was taken from the npm-install(1) command. The location
