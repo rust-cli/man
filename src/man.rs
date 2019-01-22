@@ -360,26 +360,24 @@ fn exit_status(page: Roff, exit_statuses: &[ExitStatus]) -> Roff {
   if exit_statuses.is_empty() {
     return page;
   }
-  let arr = if exit_statuses
-    .iter()
-    .any(|status| status.use_default_instead)
-  {
+  let should_use_default = exit_statuses.iter().any(|s| s.use_default_instead);
+  let arr = if should_use_default {
     vec![
       list(&[bold("0")], &["Successful program execution.\n\n"]),
       list(&[bold("1")], &["Unsuccessful program execution.\n\n"]),
       list(&[bold("101")], &["The program panicked."]),
     ]
   } else {
-    let mut arr = vec![];
-    for exit_status in exit_statuses {
-      let exit_code =
-        format!("{}", exit_status.code.expect("initialized with value"));
-      let mut exit_description =
-        String::from(exit_status.description.unwrap_or(""));
-      exit_description.push_str("\n\n");
-      arr.push(list(&[bold(&exit_code)], &[exit_description]));
-    }
-    arr
+    exit_statuses
+      .iter()
+      .map(|status| {
+        let code =
+          format!("{}", status.code.expect("initialized with a value"));
+        let mut description = String::from(status.description.unwrap_or(""));
+        description.push_str("\n\n");
+        list(&[bold(&code)], &[description])
+      })
+      .collect()
   };
   page.section("EXIT STATUS", &arr)
 }
