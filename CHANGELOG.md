@@ -1,3 +1,26 @@
+## 2019-01-22, Version 0.3.0
+### Commits
+- [[`cb87621fac`](https://github.com/rust-clique/man/commit/cb87621fac17ebfd661ce69b1d64527375227e14)] (cargo-release) version 0.3.0 (Yoshua Wuyts)
+- [[`af9a6dfc93`](https://github.com/rust-clique/man/commit/af9a6dfc93c3ea84b45e0b6a3651e3a725fbcea2)] Merge pull request #28 from codesections/example-section (Dylan DPC)
+- [[`d104a4a5c3`](https://github.com/rust-clique/man/commit/d104a4a5c337bbe0fc1f030e3db75543ac482b25)] Remove extraneous comment (Daniel Sockwell)
+- [[`552ded4f8e`](https://github.com/rust-clique/man/commit/552ded4f8ea794f331502940583dfd393ba81ef0)] Derive default to make Clippy happy (Daniel Sockwell)
+- [[`5b7c4a86e5`](https://github.com/rust-clique/man/commit/5b7c4a86e543b5a134a9919cee8f9c9dd1e00e2f)] Add API for example section and update docs (Daniel Sockwell)
+- [[`2847380514`](https://github.com/rust-clique/man/commit/28473805145c2dc9ff3d61246755b0f65c48564f)] Update changelog (Yoshua Wuyts)
+
+### Stats
+```diff
+ CHANGELOG.md     | 25 +++++++++++++++++++++++++
+ Cargo.toml       |  2 +-
+ README.md        | 12 ++++++++++++
+ examples/main.rs | 12 ++++++++++++
+ src/example.rs   | 39 +++++++++++++++++++++++++++++++++++++++
+ src/lib.rs       |  2 ++
+ src/man.rs       | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/prelude.rs   |  1 +
+ 8 files changed, 146 insertions(+), 1 deletion(-)
+```
+
+
 ## 2019-01-18, Version 0.2.0
 ### Commits
 - [[`be9f474a8d`](https://github.com/rust-clique/man/commit/be9f474a8d468f1ee5dcbcb265b1622f9d7b4b07)] (cargo-release) version 0.2.0 (Yoshua Wuyts)
