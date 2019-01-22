@@ -35,6 +35,12 @@ fn main() {
                 .long("--output")
                 .help("The file path to write output to"),
         )
+        .example(
+            Example::new()
+                .text("run basic in debug mode")
+                .command("basic -d")
+                .output("Debug Mode: basic will print errors to the console")
+            )
         .custom(
             Section::new("usage note")
                 .paragraph("This program will overwrite any file currently stored at the output path")
@@ -72,12 +78,18 @@ OPTIONS
 
 USAGE NOTE
        This file will overwrite any file currently stored at the output path.
+
 EXIT STATUS
        0      Successful program execution.
 
        1      Unsuccessful program execution.
 
        101    The program panicked.
+
+EXAMPLES
+       run basic in debug mode
+              $ basic -d
+              Debug Mode: basic will print errors to the console
 
 AUTHORS
          Alice Person <alice@person.com>
