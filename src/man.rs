@@ -7,6 +7,8 @@ pub struct Manual {
   name: String,
   about: Option<String>,
   description: Option<String>,
+  date: Option<String>,
+  version: Option<String>,
   authors: Vec<Author>,
   flags: Vec<Flag>,
   options: Vec<Opt>,
@@ -23,6 +25,8 @@ impl Manual {
       name: name.into(),
       about: None,
       description: None,
+      date: None,
+      version: None,
       authors: vec![],
       flags: vec![],
       options: vec![],
@@ -42,6 +46,18 @@ impl Manual {
   /// Add a long description.
   pub fn description<S: Into<String>>(mut self, description: S) -> Self {
     self.description = Some(description.into());
+    self
+  }
+
+  /// Add a last modified date
+  pub fn date<S: Into<String>>(mut self, date: S) -> Self {
+    self.date = Some(date.into());
+    self
+  }
+
+  /// Add a version
+  pub fn version<S: Into<String>>(mut self, version: S) -> Self {
+    self.version = Some(version.into());
     self
   }
 
@@ -91,8 +107,8 @@ impl Manual {
 
   /// Render to a string.
   pub fn render(self) -> String {
-    let man_num = 1;
-    let mut page = Roff::new(&self.name, man_num);
+    let title_line = title_line(self.name.clone(), self.version, self.date);
+    let mut page = Roff::new(&title_line, 5);
     page = about(page, &self.name, &self.about);
     page = synopsis(
       page,
@@ -383,6 +399,29 @@ fn custom(page: Roff, custom_section: Section) -> Roff {
   page.section(&custom_section.name, &paragraphs)
 }
 
+/// Add the date and version information to the header (if available)
+fn title_line(
+  name: String,
+  version: Option<String>,
+  date: Option<String>,
+) -> String {
+  // NOTE(ds): This is less elegant than it could be because Roff::new isn't set up
+  // to accept date or version information right now.  I'll submit a PR to that
+  // crate, but this (mostly) works in the meantime
+  let man_num: i8 = 1;
+  let mut title_line = format!("{} \"{}\"", name, man_num);
+  match date {
+    // This Roff::new capitalizes the date, incorrectly
+    Some(date) => title_line.push_str(format!(" \"{}\"", date).as_str()),
+    None => title_line.push_str(" \" \""),
+  }
+  match version {
+    Some(version) => title_line.push_str(format!(" \"{}\"", version).as_str()),
+    None => title_line.push_str(" \" \""),
+  }
+  title_line.push_str(" \"User Commands\"");
+  title_line
+}
 /// Create an examples section
 ///
 /// examples can have text (shown before the example command) and the command

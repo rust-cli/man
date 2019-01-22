@@ -5,6 +5,8 @@ use man::prelude::*;
 fn main() {
   let msg = Manual::new("auth-service")
     .about("authorize & authenticate members")
+    .version(env!("CARGO_PKG_VERSION"))
+    .date("February 2019")
     .arg(Arg::new("path"))
     .env(Env::new("PORT").help("The network port to listen to"))
     .flag(
