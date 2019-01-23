@@ -55,45 +55,47 @@ Preview by running:
 $ cargo run > /tmp/app.man; man /tmp/app.man
 ```
 Which outputs:
-```txt
-BASIC(1)                                             General Commands Manual                                             BASIC(1)
+<pre>
+BASIC(1)                       General Commands Manual                          BASIC(1)
 
-NAME
+<b>NAME</b>
        basic - A basic example
 
-SYNOPSIS
-       basic [FLAGS] [OPTIONS]
+<b>SYNOPSIS</b>
+       <b>basic</b> [FLAGS] [OPTIONS]
 
-FLAGS
-       -d, --debug
+<b>FLAGS</b>
+       <b>-d, --debug</b>
               Enable debug mode
 
-       -v, --verbose
+       <b>-v, --verbose</b>
               Enable verbose mode
 
-OPTIONS
-       -o, --output=output
+<b>OPTIONS</b>
+       <b>-o, --output</b>=<i>output</i>
               The file path to write output to
 
-USAGE NOTE
+<b>USAGE NOTE</b>
        This file will overwrite any file currently stored at the output path.
 
-EXIT STATUS
-       0      Successful program execution.
+<b>EXIT STATUS</b>
+       <strong>0</strong>      Successful program execution.
 
-       1      Unsuccessful program execution.
+       <b>1</b>      Unsuccessful program execution.
 
-       101    The program panicked.
+       <b>101</b>    The program panicked.
 
-EXAMPLES
+<b>EXAMPLES</b>
        run basic in debug mode
-              $ basic -d
+              <b>$ basic -d</b>
               Debug Mode: basic will print errors to the console
 
-AUTHORS
-         Alice Person <alice@person.com>
-         Bob Human <bob@human.com>
-```
+<b>AUTHORS</b>
+         Alice Person &lt;alice@person.com&gt;
+         Bob Human &lt;bob@human.com&gt;
+
+                                                                                BASIC(1)
+</pre>
 
 ## Installation
 If using [cargo-edit](https://github.com/killercup/cargo-edit), install with
