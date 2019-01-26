@@ -25,15 +25,15 @@ enum ExitStatuses {
 
 static DEFAULT_STATUSES: [ExitStatus; 3] = [
   ExitStatus {
-    code: 0,
+    code: Some(0),
     description: Some("Successful program execution."),
   },
   ExitStatus {
-    code: 1,
+    code: Some(1),
     description: Some("Unsuccessful program execution."),
   },
   ExitStatus {
-    code: 101,
+    code: Some(101),
     description: Some("The program panicked."),
   },
 ];
@@ -133,9 +133,7 @@ impl Manual {
 
   pub fn exit_status(mut self, exit_status: ExitStatus) -> Self {
     match exit_status {
-      ExitStatus {
-        description: None, ..
-      } => {
+      ExitStatus { code: None, .. } => {
         self.exit_statuses.set_to_default();
       }
       _ => {
@@ -411,7 +409,7 @@ fn exit_status(page: Roff, exit_statuses: &ExitStatuses) -> Roff {
   }
   let mut arr = vec![];
   for status in exit_statuses.iter() {
-    let code = format!("{}", status.code);
+    let code = format!("{}", status.code.expect("set by `.new()` method"));
     let mut description = String::from(status.description.unwrap_or(""));
     description.push_str("\n\n");
     arr.push(list(&[bold(&code)], &[description]));

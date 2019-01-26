@@ -40,13 +40,7 @@ fn main() {
         .paragraph("text for the custom section")
         .paragraph("Additional text for the custom section"),
     )
-    .exit_status(
-      ExitStatus::new(0).description("Successful program execution."),
-    )
-    .exit_status(ExitStatus::new(1).description("Invalid input."))
-    .exit_status(ExitStatus::new(2).description("Could not read config file."))
-    .exit_status(ExitStatus::new(3).description("Could not connect to sever."))
-    .exit_status(ExitStatus::new(101).description("The program panicked."))
+    .exit_status(ExitStatus::new(0))
     .example(
       Example::new()
         .text("listen on port 3000")
