@@ -8,7 +8,7 @@ pub struct ExitStatus {
 impl ExitStatus {
   pub fn new(code: i32) -> Self {
     Self {
-      code: code,
+      code,
       description: None,
     }
   }

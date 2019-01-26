@@ -406,7 +406,7 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 ///        2      Optional error
 /// ```
 fn exit_status(page: Roff, exit_statuses: &ExitStatuses) -> Roff {
-  if exit_statuses.iter().collect::<Vec<_>>().is_empty() {
+  if exit_statuses.iter().next().is_none() {
     return page;
   }
   let mut arr = vec![];
