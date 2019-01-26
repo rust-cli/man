@@ -25,13 +25,10 @@ enum ExitStatuses {
 
 impl ExitStatuses {
   fn push(&mut self, new_status: ExitStatus) {
-    match self.to_owned() {
-      ExitStatuses::CustomStatuses(mut vec) => {
-        vec.push(new_status);
-        *self = ExitStatuses::CustomStatuses(vec);
-      }
-      _ => {}
-    };
+    if let ExitStatuses::CustomStatuses(mut vec) = self.to_owned() {
+      vec.push(new_status);
+      *self = ExitStatuses::CustomStatuses(vec);
+    }
   }
 
   fn set_to_default(&mut self) {
