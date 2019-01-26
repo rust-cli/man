@@ -3,7 +3,6 @@
 pub struct ExitStatus {
   pub(crate) code: Option<i32>,
   pub(crate) description: Option<&'static str>,
-  pub(crate) use_default_instead: bool,
 }
 
 impl ExitStatus {
@@ -11,15 +10,6 @@ impl ExitStatus {
     Self {
       code: Some(code),
       description: None,
-      use_default_instead: false,
-    }
-  }
-
-  pub fn default() -> Self {
-    Self {
-      code: None,
-      description: None,
-      use_default_instead: true,
     }
   }
 

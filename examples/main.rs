@@ -31,6 +31,12 @@ fn main() {
         .long("--port")
         .help("The network port to listen to."),
     )
+    .custom(
+      Section::new("custom section")
+        .paragraph("text for the custom section")
+        .paragraph("Additional text for the custom section"),
+    )
+    .exit_status(ExitStatus::default())
     .example(
       Example::new()
         .text("listen on port 3000")
@@ -43,12 +49,6 @@ fn main() {
         .prompt("#")
         .command("auth-service"),
     )
-    .custom(
-      Section::new("custom section")
-        .paragraph("text for the custom section")
-        .paragraph("Additional text for the custom section"),
-    )
-    .exit_status(ExitStatus::default())
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .render();
