@@ -19,33 +19,41 @@ pub struct Manual {
 
 #[derive(Debug, Clone)]
 enum ExitStatuses {
-  DefaultStatuses([ExitStatus; 3]),
+  DefaultStatuses,
   CustomStatuses(Vec<ExitStatus>),
 }
 
+static DEFAULT_STATUSES: [ExitStatus; 3] = [
+  ExitStatus {
+    code: 0,
+    description: Some("Successful program execution."),
+  },
+  ExitStatus {
+    code: 1,
+    description: Some("Unsuccessful program execution."),
+  },
+  ExitStatus {
+    code: 101,
+    description: Some("The program panicked."),
+  },
+];
+
 impl ExitStatuses {
   fn push(&mut self, new_status: ExitStatus) {
-    if let ExitStatuses::CustomStatuses(mut vec) = self.to_owned() {
+    if let ExitStatuses::CustomStatuses(vec) = self {
       vec.push(new_status);
-      *self = ExitStatuses::CustomStatuses(vec);
     }
   }
 
   fn set_to_default(&mut self) {
-    *self = ExitStatuses::DefaultStatuses([
-      ExitStatus {
-        code: Some(0),
-        description: Some("Successful program execution."),
-      },
-      ExitStatus {
-        code: Some(1),
-        description: Some("Unsuccessful program execution."),
-      },
-      ExitStatus {
-        code: Some(101),
-        description: Some("The program panicked."),
-      },
-    ]);
+    *self = ExitStatuses::DefaultStatuses;
+  }
+
+  fn iter(&self) -> impl Iterator<Item = &ExitStatus> {
+    match self {
+      ExitStatuses::CustomStatuses(vec) => vec.iter(),
+      ExitStatuses::DefaultStatuses => DEFAULT_STATUSES.iter(),
+    }
   }
 }
 
@@ -125,7 +133,9 @@ impl Manual {
 
   pub fn exit_status(mut self, exit_status: ExitStatus) -> Self {
     match exit_status {
-      ExitStatus { code: None, .. } => {
+      ExitStatus {
+        description: None, ..
+      } => {
         self.exit_statuses.set_to_default();
       }
       _ => {
@@ -396,28 +406,15 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 ///        2      Optional error
 /// ```
 fn exit_status(page: Roff, exit_statuses: &ExitStatuses) -> Roff {
+  if exit_statuses.iter().collect::<Vec<_>>().is_empty() {
+    return page;
+  }
   let mut arr = vec![];
-  match exit_statuses {
-    ExitStatuses::DefaultStatuses(default_statuses) => {
-      for status in default_statuses.iter() {
-        let code = format!("{}", status.code.expect("Set as part of default"));
-        let mut description = String::from(status.description.unwrap());
-        description.push_str("\n\n");
-        arr.push(list(&[bold(&code)], &[description]));
-      }
-    }
-    ExitStatuses::CustomStatuses(custom_statuses) => {
-      if custom_statuses.is_empty() {
-        return page;
-      }
-      for status in custom_statuses.iter() {
-        let code =
-          format!("{}", status.code.expect("Always set when not default"));
-        let mut description = String::from(status.description.unwrap_or(""));
-        description.push_str("\n\n");
-        arr.push(list(&[bold(&code)], &[description]));
-      }
-    }
+  for status in exit_statuses.iter() {
+    let code = format!("{}", status.code);
+    let mut description = String::from(status.description.unwrap_or(""));
+    description.push_str("\n\n");
+    arr.push(list(&[bold(&code)], &[description]));
   }
   page.section("exit status", &arr)
 }

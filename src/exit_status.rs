@@ -1,14 +1,14 @@
 /// Add a exit status section
 #[derive(Debug, Clone, Default)]
 pub struct ExitStatus {
-  pub(crate) code: Option<i32>,
+  pub(crate) code: i32,
   pub(crate) description: Option<&'static str>,
 }
 
 impl ExitStatus {
   pub fn new(code: i32) -> Self {
     Self {
-      code: Some(code),
+      code: code,
       description: None,
     }
   }
