@@ -4,7 +4,6 @@ use man::prelude::*;
 
 fn main() {
   let msg = Manual::new("auth-service")
-    .about("authorize & authenticate members")
     .arg(Arg::new("path"))
     .env(Env::new("PORT").help("The network port to listen to"))
     .flag(
@@ -31,7 +30,17 @@ fn main() {
         .long("--port")
         .help("The network port to listen to."),
     )
-    .exit_status(ExitStatus::default())
+    .custom(
+      Section::new("custom section")
+        .paragraph("text for the custom section")
+        .paragraph("Additional text for the custom section"),
+    )
+    .custom(
+      Section::new("second custom section")
+        .paragraph("text for the custom section")
+        .paragraph("Additional text for the custom section"),
+    )
+    .exit_status(ExitStatus::new(0))
     .example(
       Example::new()
         .text("listen on port 3000")
@@ -47,7 +56,6 @@ fn main() {
     .author(Author::new("Alice Person").email("alice@person.com"))
     .author(Author::new("Bob Human").email("bob@human.com"))
     .render();
-  // .option(Some("-o"), Some("--output"), "output", None, "Output file");
 
   println!("{}", msg);
 }

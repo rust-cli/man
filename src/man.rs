@@ -13,7 +13,48 @@ pub struct Manual {
   environment: Vec<Env>,
   arguments: Vec<Arg>,
   custom_sections: Vec<Section>,
+  exit_statuses: ExitStatuses,
   examples: Vec<Example>,
+}
+
+#[derive(Debug, Clone)]
+enum ExitStatuses {
+  DefaultStatuses,
+  CustomStatuses(Vec<ExitStatus>),
+}
+
+static DEFAULT_STATUSES: [ExitStatus; 3] = [
+  ExitStatus {
+    code: Some(0),
+    description: Some("Successful program execution."),
+  },
+  ExitStatus {
+    code: Some(1),
+    description: Some("Unsuccessful program execution."),
+  },
+  ExitStatus {
+    code: Some(101),
+    description: Some("The program panicked."),
+  },
+];
+
+impl ExitStatuses {
+  fn push(&mut self, new_status: ExitStatus) {
+    if let ExitStatuses::CustomStatuses(vec) = self {
+      vec.push(new_status);
+    }
+  }
+
+  fn set_to_default(&mut self) {
+    *self = ExitStatuses::DefaultStatuses;
+  }
+
+  fn iter(&self) -> impl Iterator<Item = &ExitStatus> {
+    match self {
+      ExitStatuses::CustomStatuses(vec) => vec.iter(),
+      ExitStatuses::DefaultStatuses => DEFAULT_STATUSES.iter(),
+    }
+  }
 }
 
 impl Manual {
@@ -29,6 +70,7 @@ impl Manual {
       arguments: vec![],
       environment: vec![],
       custom_sections: vec![],
+      exit_statuses: ExitStatuses::CustomStatuses(vec![]),
       examples: vec![],
     }
   }
@@ -89,6 +131,18 @@ impl Manual {
     self
   }
 
+  pub fn exit_status(mut self, exit_status: ExitStatus) -> Self {
+    match exit_status {
+      ExitStatus { code: None, .. } => {
+        self.exit_statuses.set_to_default();
+      }
+      _ => {
+        self.exit_statuses.push(exit_status);
+      }
+    }
+    self
+  }
+
   /// Render to a string.
   pub fn render(self) -> String {
     let man_num = 1;
@@ -108,7 +162,7 @@ impl Manual {
     for section in self.custom_sections.into_iter() {
       page = custom(page, section);
     }
-    page = exit_status(page);
+    page = exit_status(page, &self.exit_statuses);
     page = examples(page, &self.examples);
     page = authors(page, &self.authors);
     page.render()
@@ -336,9 +390,9 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 
 /// Create a `EXIT STATUS` section.
 ///
-/// ## Implementation Note
-/// This currently only returns the status code `0`, and takes no arguments. We
-/// should let it take arguments.
+/// If initialized with the default method, this will have status codes of 0
+/// (success), 1 (failure), and 101 (panic).  Alternatively, it can be initialized
+/// with custom codes and descriptions.
 ///
 /// ## Formatting
 /// ```txt
@@ -349,15 +403,18 @@ fn env(page: Roff, environment: &[Env]) -> Roff {
 ///
 ///        2      Optional error
 /// ```
-fn exit_status(page: Roff) -> Roff {
-  page.section(
-    "EXIT STATUS",
-    &[
-      list(&[bold("0")], &["Successful program execution.\n\n"]),
-      list(&[bold("1")], &["Unsuccessful program execution.\n\n"]),
-      list(&[bold("101")], &["The program panicked."]),
-    ],
-  )
+fn exit_status(page: Roff, exit_statuses: &ExitStatuses) -> Roff {
+  if exit_statuses.iter().next().is_none() {
+    return page;
+  }
+  let mut arr = vec![];
+  for status in exit_statuses.iter() {
+    let code = format!("{}", status.code.expect("set by `.new()` method"));
+    let mut description = String::from(status.description.unwrap_or(""));
+    description.push_str("\n\n");
+    arr.push(list(&[bold(&code)], &[description]));
+  }
+  page.section("exit status", &arr)
 }
 
 /// Create a custom section.
